@@ -59,10 +59,9 @@ func characterHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func createCharacterHandler(w http.ResponseWriter, r *http.Request) {
-	read := r.Body
-	characterReq := &CreateCharacterRequest{}
+	var req CreateCharacterRequest
 
-	if err := json.NewDecoder(read).Decode(characterReq); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
@@ -70,7 +69,7 @@ func createCharacterHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	if err := json.NewEncoder(w).Encode(characterReq); err != nil {
+	if err := json.NewEncoder(w).Encode(req); err != nil {
 		log.Printf("failed to encode character: %v", err)
 	}
 }
