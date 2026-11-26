@@ -1,2 +1,1 @@
-# go-server
 # http-server
