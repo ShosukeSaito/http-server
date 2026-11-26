@@ -70,7 +70,6 @@ func newRouter() *http.ServeMux {
 func main() {
 	log.Println("Server starting on http://localhost:8080")
 	mux := newRouter()
-	mux = newRouter()
 
 	err := http.ListenAndServe("127.0.0.1:8080", mux)
 	if err != nil {

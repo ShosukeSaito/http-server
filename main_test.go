@@ -190,14 +190,6 @@ func TestCharacterHandlerTable(t *testing.T) {
 			expectedBody:        "Method Not Allowed\n",
 			expectedContentType: "text/plain; charset=utf-8",
 		},
-		{
-			name:                "Method Not Allowed",
-			method:              http.MethodPost,
-			path:                "/characters/2001",
-			expectedStatus:      http.StatusMethodNotAllowed,
-			expectedBody:        "Method Not Allowed\n",
-			expectedContentType: "text/plain; charset=utf-8",
-		},
 	}
 
 	for _, tt := range tests {
