@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
+	"unicode/utf8"
 )
 
 type Character struct {
@@ -64,6 +66,15 @@ func createCharacterHandler(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
+	}
+
+	if strings.TrimSpace(req.Name) == "" || utf8.RuneCountInString(req.Name) > 20 {
+		http.Error(w, "Invalid character name", http.StatusBadRequest)
+		return
+	}
+
+	if req.Level < 1 || req.Level > 100 {
+		http.Error(w, "Invalid character level", http.StatusBadRequest)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
