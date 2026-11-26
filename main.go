@@ -75,6 +75,7 @@ func createCharacterHandler(w http.ResponseWriter, r *http.Request) {
 
 	if req.Level < 1 || req.Level > 100 {
 		http.Error(w, "Invalid character level", http.StatusBadRequest)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
