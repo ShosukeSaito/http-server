@@ -62,8 +62,6 @@ func newRouter() *http.ServeMux {
 		characterHandler,
 	)
 
-	http.HandleFunc("GET /characters/{id}", characterHandler)
-
 	return mux
 }
 
