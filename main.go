@@ -13,6 +13,11 @@ type Character struct {
 	Level int    `json:"level"`
 }
 
+type CreateCharacterRequest struct {
+	Name  string `json:"name"`
+	Level int    `json:"level"`
+}
+
 var characters = map[int]Character{
 	2001: {
 		ID:    2001,
@@ -53,12 +58,34 @@ func characterHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func createCharacterHandler(w http.ResponseWriter, r *http.Request) {
+	read := r.Body
+	characterReq := &CreateCharacterRequest{}
+
+	if err := json.NewDecoder(read).Decode(characterReq); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(w).Encode(characterReq); err != nil {
+		log.Printf("failed to encode character: %v", err)
+	}
+}
+
 func newRouter() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc(
 		"GET /characters/{id}",
 		characterHandler,
+	)
+
+	mux.HandleFunc(
+		"POST /characters",
+		createCharacterHandler,
 	)
 
 	return mux
