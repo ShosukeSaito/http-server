@@ -46,7 +46,6 @@ func characterHandler(w http.ResponseWriter, r *http.Request) {
 
 	// ④ 正常系のレスポンス
 	w.Header().Set("Content-Type", "application/json")
-	// w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
 
 	if err := json.NewEncoder(w).Encode(character); err != nil {
