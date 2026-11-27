@@ -7,7 +7,6 @@ import (
 	"strings"
 	"sync"
 	"testing"
-	"time"
 )
 
 func TestCharacterHandlerTable(t *testing.T) {
@@ -357,26 +356,97 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 	}
 }
 
-func TestWaitGroup(t *testing.T) {
-	// ① WaitGroupを定義する
+func TestCreateCharacterHandlerConcurrent(t *testing.T) {
+	// ① キャラクターの状態を初期化する
+	resetCharacterState()
+
+	// ② ルーターを生成する
+	mux := newRouter()
+
+	// ③ リクエスト数を定義する
+	const requestCount = 10
+
+	// ④ 結果格納用のスライスを生成する
+	results := make([]Character, requestCount)
+
+	// ⑤ WaitGroupを定義する
 	var wg sync.WaitGroup
 
-	// ② forループで3つのgoroutineを起動する
-	for i := 1; i <= 3; i++ {
-		//    各goroutineで以下の処理を行う
+	method := http.MethodPost
+	path := "/characters"
+	jsonBody := `{"name": "Knight", "level": 1}`
+
+	// ⑥ forループで10個のgoroutineを起動する
+	for i := 0; i < requestCount; i++ {
 		wg.Go(func() {
-			//    - 開始ログの出力
-			t.Logf("task %d started", i)
-			//    - 100ミリ秒の待機
-			time.Sleep(100 * time.Millisecond)
-			//    - 終了ログの出力
-			t.Logf("task %d finished", i)
+			// ===POST APIを実行===
+			//    各goroutine内で以下を実行する
+
+			//    - POSTリクエストの生成
+			req := httptest.NewRequest(
+				method,
+				path,
+				strings.NewReader(jsonBody),
+			)
+			//    - Content-Typeの設定
+			req.Header.Set("Content-Type", "application/json")
+			//    - ResponseRecorderの生成
+			recorder := httptest.NewRecorder()
+			//    - APIの実行
+			mux.ServeHTTP(recorder, req)
+			//    - ステータスコードの検証
+			if recorder.Code != http.StatusCreated {
+				t.Errorf(
+					"expected status %d, got %d",
+					http.StatusCreated,
+					recorder.Code,
+				)
+				return
+			}
+			//    - JSONレスポンスのデコード
+			var character Character
+			err := json.Unmarshal(
+				recorder.Body.Bytes(),
+				&character,
+			)
+
+			if err != nil {
+				t.Errorf("failed to decode response: %v", err)
+				return
+			}
+			//    - 結果をスライスに格納
+			results[i] = character
 		})
 	}
 
-	// ③ すべてのgoroutineの終了を待機する
+	// ⑦ 全goroutineの終了を待機する
 	wg.Wait()
 
-	// ④ 全処理完了のログを出力する
-	t.Log("all tasks finished")
+	// ⑧ IDの重複がないことを検証する
+	seenIDs := make(map[int]bool)
+	for _, character := range results {
+		if seenIDs[character.ID] {
+			t.Errorf("duplicate character ID found: %d", character.ID)
+		}
+		seenIDs[character.ID] = true
+	}
+
+	// ⑨ IDが2003〜2012の範囲内であることを検証する
+	for _, character := range results {
+		if character.ID < 2003 || character.ID > 2012 {
+			t.Errorf("character ID %d is out of expected range", character.ID)
+		}
+	}
+
+	// ⑩ charactersの要素数を検証する
+	const expectedTotalCount = 12
+	if len(characters) != expectedTotalCount {
+		t.Errorf("expected characters length %d, got %d", expectedTotalCount, len(characters))
+	}
+
+	// ⑪ nextCharacterIDを検証する
+	const expectedNextID = 2013
+	if nextCharacterID != expectedNextID {
+		t.Errorf("expected nextCharacterID %d, got %d", expectedNextID, nextCharacterID)
+	}
 }

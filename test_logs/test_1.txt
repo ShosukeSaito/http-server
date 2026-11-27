@@ -1,29 +1,4 @@
-=== RUN   TestWaitGroup
-    main_test.go:369: task 3 started
-    main_test.go:369: task 1 started
-    main_test.go:369: task 2 started
-    main_test.go:373: task 1 finished
-    main_test.go:373: task 2 finished
-    main_test.go:373: task 3 finished
-    main_test.go:381: all tasks finished
---- PASS: TestWaitGroup (0.10s)
-=== RUN   TestWaitGroup
-    main_test.go:369: task 1 started
-    main_test.go:369: task 2 started
-    main_test.go:369: task 3 started
-    main_test.go:373: task 2 finished
-    main_test.go:373: task 3 finished
-    main_test.go:373: task 1 finished
-    main_test.go:381: all tasks finished
---- PASS: TestWaitGroup (0.10s)
-=== RUN   TestWaitGroup
-    main_test.go:369: task 3 started
-    main_test.go:369: task 1 started
-    main_test.go:369: task 2 started
-    main_test.go:373: task 2 finished
-    main_test.go:373: task 3 finished
-    main_test.go:373: task 1 finished
-    main_test.go:381: all tasks finished
---- PASS: TestWaitGroup (0.10s)
+=== RUN   TestCreateCharacterHandlerConcurrent
+--- PASS: TestCreateCharacterHandlerConcurrent (0.00s)
 PASS
-ok  	example.com/http-server	0.721s
+ok  	example.com/http-server	0.438s

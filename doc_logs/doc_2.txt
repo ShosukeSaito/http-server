@@ -1,6 +1,0 @@
-package time // import "time"
-
-func Sleep(d Duration)
-    Sleep pauses the current goroutine for at least the duration d. A negative
-    or zero duration causes Sleep to return immediately.
-
