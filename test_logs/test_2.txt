@@ -1,0 +1,48 @@
+=== RUN   TestCharacterHandler
+    main_test.go:41: response body: {"id":2001,"name":"Hero","level":10}
+--- PASS: TestCharacterHandler (0.00s)
+=== RUN   TestCharacterHandlerNotFound
+--- PASS: TestCharacterHandlerNotFound (0.00s)
+=== RUN   TestCharacterHandlerBadRequest
+--- PASS: TestCharacterHandlerBadRequest (0.00s)
+=== RUN   TestCharacterHandlerTable
+=== RUN   TestCharacterHandlerTable/existing_character_2001
+=== RUN   TestCharacterHandlerTable/existing_character_2002
+=== RUN   TestCharacterHandlerTable/character_not_found
+=== RUN   TestCharacterHandlerTable/invalid_character_ID
+=== RUN   TestCharacterHandlerTable/404_page_not_found
+=== RUN   TestCharacterHandlerTable/Method_Not_Allowed
+--- PASS: TestCharacterHandlerTable (0.00s)
+    --- PASS: TestCharacterHandlerTable/existing_character_2001 (0.00s)
+    --- PASS: TestCharacterHandlerTable/existing_character_2002 (0.00s)
+    --- PASS: TestCharacterHandlerTable/character_not_found (0.00s)
+    --- PASS: TestCharacterHandlerTable/invalid_character_ID (0.00s)
+    --- PASS: TestCharacterHandlerTable/404_page_not_found (0.00s)
+    --- PASS: TestCharacterHandlerTable/Method_Not_Allowed (0.00s)
+=== RUN   TestCreateCharacterHandler
+--- PASS: TestCreateCharacterHandler (0.00s)
+=== RUN   TestCharacterHandler
+    main_test.go:41: response body: {"id":2001,"name":"Hero","level":10}
+--- PASS: TestCharacterHandler (0.00s)
+=== RUN   TestCharacterHandlerNotFound
+--- PASS: TestCharacterHandlerNotFound (0.00s)
+=== RUN   TestCharacterHandlerBadRequest
+--- PASS: TestCharacterHandlerBadRequest (0.00s)
+=== RUN   TestCharacterHandlerTable
+=== RUN   TestCharacterHandlerTable/existing_character_2001
+=== RUN   TestCharacterHandlerTable/existing_character_2002
+=== RUN   TestCharacterHandlerTable/character_not_found
+=== RUN   TestCharacterHandlerTable/invalid_character_ID
+=== RUN   TestCharacterHandlerTable/404_page_not_found
+=== RUN   TestCharacterHandlerTable/Method_Not_Allowed
+--- PASS: TestCharacterHandlerTable (0.00s)
+    --- PASS: TestCharacterHandlerTable/existing_character_2001 (0.00s)
+    --- PASS: TestCharacterHandlerTable/existing_character_2002 (0.00s)
+    --- PASS: TestCharacterHandlerTable/character_not_found (0.00s)
+    --- PASS: TestCharacterHandlerTable/invalid_character_ID (0.00s)
+    --- PASS: TestCharacterHandlerTable/404_page_not_found (0.00s)
+    --- PASS: TestCharacterHandlerTable/Method_Not_Allowed (0.00s)
+=== RUN   TestCreateCharacterHandler
+--- PASS: TestCreateCharacterHandler (0.00s)
+PASS
+ok  	example.com/http-server	0.452s

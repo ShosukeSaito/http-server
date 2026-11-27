@@ -250,12 +250,15 @@ func TestCharacterHandlerTable(t *testing.T) {
 }
 
 func TestCreateCharacterHandler(t *testing.T) {
+	// 初期化
+	resetCharacterState()
+
 	// ① ルーターの生成
 	mux := newRouter()
 
 	// ② JSONリクエストボディの用意
 	path := "/characters"
-	jsonBody := "{\"name\":\"Knight\",\"level\":1}"
+	jsonBody := `{"name":"Knight","level":1}`
 
 	// ③ POSTリクエストの生成
 	req := httptest.NewRequest(
@@ -263,6 +266,8 @@ func TestCreateCharacterHandler(t *testing.T) {
 		path,
 		strings.NewReader(jsonBody),
 	)
+
+	req.Header.Set("Content-Type", "application/json")
 
 	// ④ ResponseRecorderの生成
 	recorder := httptest.NewRecorder()
@@ -324,4 +329,25 @@ func TestCreateCharacterHandler(t *testing.T) {
 	if actualCharacter != expectedCharacter {
 		t.Errorf("expected %+v, got %+v", expectedCharacter, actualCharacter)
 	}
+}
+
+func resetCharacterState() {
+	charactersMu.Lock()
+
+	characters = map[int]Character{
+		2001: {
+			ID:    2001,
+			Name:  "Hero",
+			Level: 10,
+		},
+		2002: {
+			ID:    2002,
+			Name:  "Mage",
+			Level: 8,
+		},
+	}
+
+	nextCharacterID = 2003
+
+	charactersMu.Unlock()
 }

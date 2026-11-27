@@ -1,0 +1,6 @@
+=== RUN   TestCreateCharacterHandler
+--- PASS: TestCreateCharacterHandler (0.00s)
+=== RUN   TestCreateCharacterHandler
+--- PASS: TestCreateCharacterHandler (0.00s)
+PASS
+ok  	example.com/http-server	0.403s
