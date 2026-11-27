@@ -364,7 +364,14 @@ func TestCreateCharacterHandlerConcurrent(t *testing.T) {
 	mux := newRouter()
 
 	// ③ リクエスト数を定義する
-	const requestCount = 10
+	const (
+		requestCount       = 10
+		initialCount       = 2
+		expectedMinID      = 2003
+		expectedMaxID      = expectedMinID + requestCount - 1
+		expectedTotalCount = initialCount + requestCount
+		expectedNextID     = expectedMinID + requestCount
+	)
 
 	// ④ 結果格納用のスライスを生成する
 	results := make([]Character, requestCount)
@@ -422,30 +429,29 @@ func TestCreateCharacterHandlerConcurrent(t *testing.T) {
 	// ⑦ 全goroutineの終了を待機する
 	wg.Wait()
 
-	// ⑧ IDの重複がないことを検証する
 	seenIDs := make(map[int]bool)
+
 	for _, character := range results {
+		// ⑧ IDの重複がないことを検証する
 		if seenIDs[character.ID] {
 			t.Errorf("duplicate character ID found: %d", character.ID)
 		}
-		seenIDs[character.ID] = true
-	}
 
-	// ⑨ IDが2003〜2012の範囲内であることを検証する
-	for _, character := range results {
-		if character.ID < 2003 || character.ID > 2012 {
+		seenIDs[character.ID] = true
+
+		// ⑨ IDが2003〜2012の範囲内であることを検証する
+		if character.ID < expectedMinID ||
+			character.ID > expectedMaxID {
 			t.Errorf("character ID %d is out of expected range", character.ID)
 		}
 	}
 
 	// ⑩ charactersの要素数を検証する
-	const expectedTotalCount = 12
 	if len(characters) != expectedTotalCount {
 		t.Errorf("expected characters length %d, got %d", expectedTotalCount, len(characters))
 	}
 
 	// ⑪ nextCharacterIDを検証する
-	const expectedNextID = 2013
 	if nextCharacterID != expectedNextID {
 		t.Errorf("expected nextCharacterID %d, got %d", expectedNextID, nextCharacterID)
 	}
