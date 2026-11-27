@@ -100,7 +100,7 @@ func createCharacterHandler(w http.ResponseWriter, r *http.Request) {
 
 	characters[nextCharacterID] = character
 
-	nextCharacterID = nextCharacterID + 1
+	nextCharacterID++
 
 	charactersMu.Unlock()
 

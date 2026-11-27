@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -245,5 +246,82 @@ func TestCharacterHandlerTable(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestCreateCharacterHandler(t *testing.T) {
+	// ① ルーターの生成
+	mux := newRouter()
+
+	// ② JSONリクエストボディの用意
+	path := "/characters"
+	jsonBody := "{\"name\":\"Knight\",\"level\":1}"
+
+	// ③ POSTリクエストの生成
+	req := httptest.NewRequest(
+		http.MethodPost,
+		path,
+		strings.NewReader(jsonBody),
+	)
+
+	// ④ ResponseRecorderの生成
+	recorder := httptest.NewRecorder()
+
+	// ⑤ リクエストの処理
+	mux.ServeHTTP(recorder, req)
+
+	// ⑥ ステータスコードの検証
+	if recorder.Code != http.StatusCreated {
+		t.Fatalf(
+			"expected status %d, got %d",
+			http.StatusCreated,
+			recorder.Code,
+		)
+	}
+
+	// ⑦ Content-Typeの検証
+	actualContentType := recorder.Header().Get("Content-Type")
+	expectedContentType := "application/json"
+
+	if actualContentType != expectedContentType {
+		t.Errorf(
+			"expected Content-Type %q, got %q",
+			expectedContentType,
+			actualContentType,
+		)
+	}
+
+	// ⑧ Locationの検証
+	actualLocation := recorder.Header().Get("Location")
+	expectedLocation := "/characters/2003"
+
+	if actualLocation != expectedLocation {
+		t.Errorf(
+			"expected Location %q, got %q",
+			expectedLocation,
+			actualLocation,
+		)
+	}
+
+	// ⑨ JSONレスポンスのデコード
+	var actualCharacter Character
+	expectedCharacter := Character{
+		ID:    2003,
+		Name:  "Knight",
+		Level: 1,
+	}
+
+	err := json.Unmarshal(
+		recorder.Body.Bytes(),
+		&actualCharacter,
+	)
+
+	if err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+
+	// ⑩ Characterの各フィールドの検証
+	if actualCharacter != expectedCharacter {
+		t.Errorf("expected %+v, got %+v", expectedCharacter, actualCharacter)
 	}
 }
