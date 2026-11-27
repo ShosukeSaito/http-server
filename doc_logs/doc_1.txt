@@ -1,44 +1,10 @@
-package sync // import "sync"
+package testing // import "testing"
 
-type WaitGroup struct {
-	// Has unexported fields.
-}
-    A WaitGroup is a counting semaphore typically used to wait for a group of
-    goroutines or tasks to finish.
+func (c *T) Logf(format string, args ...any)
+    Logf formats its arguments according to the format, analogous to fmt.Printf,
+    and records the text in the error log. A final newline is added if not
+    provided. For tests, the text will be printed only if the test fails or the
+    -test.v flag is set. For benchmarks, the text is always printed to avoid
+    having performance depend on the value of the -test.v flag. It is an error
+    to call Logf after a test or benchmark returns.
 
-    Typically, a main goroutine will start tasks, each in a new goroutine,
-    by calling WaitGroup.Go and then wait for all tasks to complete by calling
-    WaitGroup.Wait. For example:
-
-        var wg sync.WaitGroup
-        wg.Go(task1)
-        wg.Go(task2)
-        wg.Wait()
-
-    A WaitGroup may also be used for tracking tasks without using Go to start
-    new goroutines by using WaitGroup.Add and WaitGroup.Done.
-
-    The previous example can be rewritten using explicitly created goroutines
-    along with Add and Done:
-
-        var wg sync.WaitGroup
-        wg.Add(1)
-        go func() {
-        	defer wg.Done()
-        	task1()
-        }()
-        wg.Add(1)
-        go func() {
-        	defer wg.Done()
-        	task2()
-        }()
-        wg.Wait()
-
-    This pattern is common in code that predates WaitGroup.Go.
-
-    A WaitGroup must not be copied after first use.
-
-func (wg *WaitGroup) Add(delta int)
-func (wg *WaitGroup) Done()
-func (wg *WaitGroup) Go(f func())
-func (wg *WaitGroup) Wait()

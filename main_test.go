@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"testing"
+	"time"
 )
 
 func TestCharacterHandlerTable(t *testing.T) {
@@ -353,4 +355,28 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestWaitGroup(t *testing.T) {
+	// ① WaitGroupを定義する
+	var wg sync.WaitGroup
+
+	// ② forループで3つのgoroutineを起動する
+	for i := 1; i <= 3; i++ {
+		//    各goroutineで以下の処理を行う
+		wg.Go(func() {
+			//    - 開始ログの出力
+			t.Logf("task %d started", i)
+			//    - 100ミリ秒の待機
+			time.Sleep(100 * time.Millisecond)
+			//    - 終了ログの出力
+			t.Logf("task %d finished", i)
+		})
+	}
+
+	// ③ すべてのgoroutineの終了を待機する
+	wg.Wait()
+
+	// ④ 全処理完了のログを出力する
+	t.Log("all tasks finished")
 }

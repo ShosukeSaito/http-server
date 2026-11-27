@@ -1,13 +1,23 @@
-package sync // import "sync"
+package time // import "time"
 
-func (wg *WaitGroup) Done()
-    Done decrements the WaitGroup task counter by one. It is equivalent to
-    Add(-1).
+const (
+	Nanosecond  Duration = 1
+	Microsecond          = 1000 * Nanosecond
+	Millisecond          = 1000 * Microsecond
+	Second               = 1000 * Millisecond
+	Minute               = 60 * Second
+	Hour                 = 60 * Minute
+)
+    Common durations. There is no definition for units of Day or larger to avoid
+    confusion across daylight savings time zone transitions.
 
-    Callers should prefer WaitGroup.Go.
+    To count the number of units in a Duration, divide:
 
-    In the terminology of the Go memory model, a call to Done "synchronizes
-    before" the return of any Wait call that it unblocks.
+        second := time.Second
+        fmt.Print(int64(second/time.Millisecond)) // prints 1000
 
-[the Go memory model]: https://go.dev/ref/mem
+    To convert an integer number of units to a Duration, multiply:
+
+        seconds := 10
+        fmt.Print(time.Duration(seconds)*time.Second) // prints 10s
 
