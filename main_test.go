@@ -399,7 +399,7 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 			expectedBody:        "Invalid character name\n",
 		},
 		{
-			name:                "creating knight and character name length is 20",
+			name:                "creating character and character name length is 20",
 			jsonBody:            `{"name": "abcdefghijklmnopqrst", "level": 1}`,
 			expectedStatus:      http.StatusCreated,
 			expectedContentType: "application/json",
@@ -419,7 +419,7 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 			expectedBody:        "Invalid character name\n",
 		},
 		{
-			name:                "creating knight and character name is japanese",
+			name:                "creating character and character name is japanese",
 			jsonBody:            `{"name": "あいうえおかきく", "level": 1}`,
 			expectedStatus:      http.StatusCreated,
 			expectedContentType: "application/json",
@@ -476,13 +476,13 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 		},
 	}
 
+	method := http.MethodPost
+	path := "/characters"
+
 	for _, tt := range tests {
-		resetCharacterState()
-
-		method := http.MethodPost
-		path := "/characters"
-
 		t.Run(tt.name, func(t *testing.T) {
+			resetCharacterState()
+
 			req := httptest.NewRequest(
 				method,
 				path,
@@ -494,7 +494,7 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 			recorder := httptest.NewRecorder()
 
 			mux.ServeHTTP(recorder, req)
-			// [ ] ステータスコードを検証
+
 			if recorder.Code != tt.expectedStatus {
 				t.Fatalf(
 					"expected status %d, got %d",
@@ -502,7 +502,7 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 					recorder.Code,
 				)
 			}
-			// [ ] Content-Typeを検証
+
 			actualContentType := recorder.Header().Get("Content-Type")
 			if actualContentType != tt.expectedContentType {
 				t.Errorf(
@@ -511,7 +511,7 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 					actualContentType,
 				)
 			}
-			// [ ] Locationを検証
+
 			actualLocation := recorder.Header().Get("Location")
 			if actualLocation != tt.expectedLocation {
 				t.Errorf(
@@ -521,7 +521,6 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 				)
 			}
 
-			// [ ] 正常系・異常系のレスポンスボディを検証
 			if tt.expectedStatus == http.StatusCreated {
 				var actualCharacter Character
 
@@ -544,7 +543,6 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 					t.Errorf("expected %q, got %q", tt.expectedBody, actualBody)
 				}
 			}
-
 		})
 	}
 }
