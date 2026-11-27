@@ -1,4 +1,31 @@
-=== RUN   TestCreateCharacterHandlerConcurrent
---- PASS: TestCreateCharacterHandlerConcurrent (0.00s)
-PASS
-ok  	example.com/http-server	0.438s
+FAIL	example.com/http-server [build failed]
+# crypto/x509
+C:\Program Files\Go\src\crypto\x509\oid.go:305:14: internal compiler error: 'OID.String': panic during dse while compiling OID.String:
+
+runtime error: invalid memory address or nil pointer dereference
+
+goroutine 66 [running]:
+cmd/compile/internal/ssa.Compile.func1()
+	cmd/compile/internal/ssa/compile.go:49 +0x65
+panic({0x7ff727c3a590?, 0x7ff727d3ca70?})
+	runtime/panic.go:859 +0x125
+cmd/compile/internal/ssa.(*shadowRanges).add(0x2ef8985c8ca8, 0x7ff727c3f098?, 0x2ef899af1ab0?)
+	cmd/compile/internal/ssa/deadstore.go:237 +0x15f
+cmd/compile/internal/ssa.dse(0x2ef899c96000)
+	cmd/compile/internal/ssa/deadstore.go:173 +0xfa7
+cmd/compile/internal/ssa.Compile(0x2ef899c96000)
+	cmd/compile/internal/ssa/compile.go:97 +0xab4
+cmd/compile/internal/ssagen.buildssa(0x2ef898dae640, 0x0, 0x0)
+	cmd/compile/internal/ssagen/ssa.go:593 +0x393b
+cmd/compile/internal/ssagen.Compile(0x2ef898dae640, 0x0, 0x2ef897800008?)
+	cmd/compile/internal/ssagen/pgen.go:304 +0x88
+cmd/compile/internal/gc.compileFunctions.func2()
+	cmd/compile/internal/gc/compile.go:177 +0x8f
+created by cmd/compile/internal/gc.compileFunctions in goroutine 1
+	cmd/compile/internal/gc/compile.go:163 +0xe6
+
+
+
+Please file a bug report including a short program that triggers the error.
+https://go.dev/issue/new
+FAIL
