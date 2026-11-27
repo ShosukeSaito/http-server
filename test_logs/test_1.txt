@@ -1,6 +1,50 @@
-=== RUN   TestCreateCharacterHandler
---- PASS: TestCreateCharacterHandler (0.00s)
-=== RUN   TestCreateCharacterHandler
---- PASS: TestCreateCharacterHandler (0.00s)
+=== RUN   TestCreateCharacterHandlerTable
+=== RUN   TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_empty
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_blank
+=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length
+=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum
+=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum
+=== RUN   TestCreateCharacterHandlerTable/invalid_JSON_syntax
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_a_string
+--- PASS: TestCreateCharacterHandlerTable (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1 (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_empty (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_blank (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20 (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100 (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_JSON_syntax (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_a_string (0.00s)
+=== RUN   TestCreateCharacterHandlerTable
+=== RUN   TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_empty
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_blank
+=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length
+=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum
+=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum
+=== RUN   TestCreateCharacterHandlerTable/invalid_JSON_syntax
+=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_a_string
+--- PASS: TestCreateCharacterHandlerTable (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1 (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_empty (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_blank (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20 (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100 (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_JSON_syntax (0.00s)
+    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_a_string (0.00s)
 PASS
-ok  	example.com/http-server	0.403s
+ok  	example.com/http-server	0.406s

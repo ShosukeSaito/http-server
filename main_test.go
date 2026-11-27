@@ -333,6 +333,7 @@ func TestCreateCharacterHandler(t *testing.T) {
 
 func resetCharacterState() {
 	charactersMu.Lock()
+	defer charactersMu.Unlock()
 
 	characters = map[int]Character{
 		2001: {
@@ -348,6 +349,202 @@ func resetCharacterState() {
 	}
 
 	nextCharacterID = 2003
+}
 
-	charactersMu.Unlock()
+func TestCreateCharacterHandlerTable(t *testing.T) {
+	mux := newRouter()
+
+	// テストケースの定義
+	tests := []struct {
+		// テストケースの識別情報
+		name string
+
+		// JSONリクエストボディ
+		jsonBody string
+
+		// 期待値
+		expectedStatus      int
+		expectedContentType string
+		expectedLocation    string
+		expectedBody        string
+		expectedCharacter   Character
+	}{
+		{
+			// テストケースごとの実行情報
+			name:                "creating Knight and level is 1",
+			jsonBody:            `{"name": "Knight", "level": 1}`,
+			expectedStatus:      http.StatusCreated,
+			expectedContentType: "application/json",
+			expectedLocation:    "/characters/2003",
+			expectedCharacter: Character{
+				ID:    2003,
+				Name:  "Knight",
+				Level: 1,
+			},
+		},
+		{
+			name:                "invalid character name is empty",
+			jsonBody:            `{"name": "", "level": 1}`,
+			expectedStatus:      http.StatusBadRequest,
+			expectedContentType: "text/plain; charset=utf-8",
+			expectedLocation:    "",
+			expectedBody:        "Invalid character name\n",
+		},
+		{
+			name:                "invalid character name is blank",
+			jsonBody:            `{"name": " ", "level": 1}`,
+			expectedStatus:      http.StatusBadRequest,
+			expectedContentType: "text/plain; charset=utf-8",
+			expectedLocation:    "",
+			expectedBody:        "Invalid character name\n",
+		},
+		{
+			name:                "creating knight and character name length is 20",
+			jsonBody:            `{"name": "abcdefghijklmnopqrst", "level": 1}`,
+			expectedStatus:      http.StatusCreated,
+			expectedContentType: "application/json",
+			expectedLocation:    "/characters/2003",
+			expectedCharacter: Character{
+				ID:    2003,
+				Name:  "abcdefghijklmnopqrst",
+				Level: 1,
+			},
+		},
+		{
+			name:                "invalid character name exceeds maximum length",
+			jsonBody:            `{"name": "abcdefghijklmnopqrstu", "level": 1}`,
+			expectedStatus:      http.StatusBadRequest,
+			expectedContentType: "text/plain; charset=utf-8",
+			expectedLocation:    "",
+			expectedBody:        "Invalid character name\n",
+		},
+		{
+			name:                "creating knight and character name is japanese",
+			jsonBody:            `{"name": "あいうえおかきく", "level": 1}`,
+			expectedStatus:      http.StatusCreated,
+			expectedContentType: "application/json",
+			expectedLocation:    "/characters/2003",
+			expectedCharacter: Character{
+				ID:    2003,
+				Name:  "あいうえおかきく",
+				Level: 1,
+			},
+		},
+		{
+			name:                "invalid character level is below minimum",
+			jsonBody:            `{"name": "Knight", "level": 0}`,
+			expectedStatus:      http.StatusBadRequest,
+			expectedContentType: "text/plain; charset=utf-8",
+			expectedLocation:    "",
+			expectedBody:        "Invalid character level\n",
+		},
+		{
+			name:                "creating knight and character level is 100",
+			jsonBody:            `{"name": "Knight", "level": 100}`,
+			expectedStatus:      http.StatusCreated,
+			expectedContentType: "application/json",
+			expectedLocation:    "/characters/2003",
+			expectedCharacter: Character{
+				ID:    2003,
+				Name:  "Knight",
+				Level: 100,
+			},
+		},
+		{
+			name:                "invalid character level exceeds maximum",
+			jsonBody:            `{"name": "Knight", "level": 101}`,
+			expectedStatus:      http.StatusBadRequest,
+			expectedContentType: "text/plain; charset=utf-8",
+			expectedLocation:    "",
+			expectedBody:        "Invalid character level\n",
+		},
+		{
+			name:                "invalid JSON syntax",
+			jsonBody:            `{"name": "Knight", "level": 1`,
+			expectedStatus:      http.StatusBadRequest,
+			expectedContentType: "text/plain; charset=utf-8",
+			expectedLocation:    "",
+			expectedBody:        "Invalid request body\n",
+		},
+		{
+			name:                "invalid character level is a string",
+			jsonBody:            `{"name": "Knight", "level": "abc"}`,
+			expectedStatus:      http.StatusBadRequest,
+			expectedContentType: "text/plain; charset=utf-8",
+			expectedLocation:    "",
+			expectedBody:        "Invalid request body\n",
+		},
+	}
+
+	for _, tt := range tests {
+		resetCharacterState()
+
+		method := http.MethodPost
+		path := "/characters"
+
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(
+				method,
+				path,
+				strings.NewReader(tt.jsonBody),
+			)
+
+			req.Header.Set("Content-Type", "application/json")
+
+			recorder := httptest.NewRecorder()
+
+			mux.ServeHTTP(recorder, req)
+			// [ ] ステータスコードを検証
+			if recorder.Code != tt.expectedStatus {
+				t.Fatalf(
+					"expected status %d, got %d",
+					tt.expectedStatus,
+					recorder.Code,
+				)
+			}
+			// [ ] Content-Typeを検証
+			actualContentType := recorder.Header().Get("Content-Type")
+			if actualContentType != tt.expectedContentType {
+				t.Errorf(
+					"expected Content-Type %q, got %q",
+					tt.expectedContentType,
+					actualContentType,
+				)
+			}
+			// [ ] Locationを検証
+			actualLocation := recorder.Header().Get("Location")
+			if actualLocation != tt.expectedLocation {
+				t.Errorf(
+					"expected Location %q, got %q",
+					tt.expectedLocation,
+					actualLocation,
+				)
+			}
+
+			// [ ] 正常系・異常系のレスポンスボディを検証
+			if tt.expectedStatus == http.StatusCreated {
+				var actualCharacter Character
+
+				err := json.Unmarshal(
+					recorder.Body.Bytes(),
+					&actualCharacter,
+				)
+
+				if err != nil {
+					t.Fatalf("failed to decode response: %v", err)
+				}
+
+				if actualCharacter != tt.expectedCharacter {
+					t.Errorf("expected %+v, got %+v", tt.expectedCharacter, actualCharacter)
+				}
+			} else {
+				actualBody := recorder.Body.String()
+
+				if actualBody != tt.expectedBody {
+					t.Errorf("expected %q, got %q", tt.expectedBody, actualBody)
+				}
+			}
+
+		})
+	}
 }
