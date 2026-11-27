@@ -6,7 +6,13 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 	"unicode/utf8"
+)
+
+var (
+	nextCharacterID = 2003
+	charactersMu    sync.Mutex
 )
 
 type Character struct {
@@ -44,12 +50,17 @@ func characterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	charactersMu.Lock()
+
 	// ③ キャラクターの存在確認
 	character, exists := characters[id]
 	if !exists {
+		charactersMu.Unlock()
 		http.Error(w, "Character not found", http.StatusNotFound)
 		return
 	}
+
+	charactersMu.Unlock()
 
 	// ④ 正常系のレスポンス
 	w.Header().Set("Content-Type", "application/json")
@@ -78,10 +89,32 @@ func createCharacterHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	charactersMu.Lock()
+
+	// ④ ID採番・重複チェック
+	_, exists := characters[nextCharacterID]
+	if exists {
+		charactersMu.Unlock()
+		http.Error(w, "Character already exists", http.StatusConflict)
+		return
+	}
+
+	character := Character{
+		ID:    nextCharacterID,
+		Name:  req.Name,
+		Level: req.Level,
+	}
+
+	characters[nextCharacterID] = character
+
+	nextCharacterID = nextCharacterID + 1
+
+	charactersMu.Unlock()
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	if err := json.NewEncoder(w).Encode(req); err != nil {
+	if err := json.NewEncoder(w).Encode(character); err != nil {
 		log.Printf("failed to encode character: %v", err)
 	}
 }
