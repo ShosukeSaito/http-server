@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -54,13 +55,13 @@ func characterHandler(w http.ResponseWriter, r *http.Request) {
 
 	// ③ キャラクターの存在確認
 	character, exists := characters[id]
+
+	charactersMu.Unlock()
+
 	if !exists {
-		charactersMu.Unlock()
 		http.Error(w, "Character not found", http.StatusNotFound)
 		return
 	}
-
-	charactersMu.Unlock()
 
 	// ④ 正常系のレスポンス
 	w.Header().Set("Content-Type", "application/json")
@@ -91,14 +92,6 @@ func createCharacterHandler(w http.ResponseWriter, r *http.Request) {
 
 	charactersMu.Lock()
 
-	// ④ ID採番・重複チェック
-	_, exists := characters[nextCharacterID]
-	if exists {
-		charactersMu.Unlock()
-		http.Error(w, "Character already exists", http.StatusConflict)
-		return
-	}
-
 	character := Character{
 		ID:    nextCharacterID,
 		Name:  req.Name,
@@ -112,7 +105,8 @@ func createCharacterHandler(w http.ResponseWriter, r *http.Request) {
 	charactersMu.Unlock()
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Location", fmt.Sprintf("/characters/%d", character.ID))
+	w.WriteHeader(http.StatusCreated)
 
 	if err := json.NewEncoder(w).Encode(character); err != nil {
 		log.Printf("failed to encode character: %v", err)
