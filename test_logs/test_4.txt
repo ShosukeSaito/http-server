@@ -1,0 +1,5 @@
+package sync // import "sync"
+
+func (wg *WaitGroup) Wait()
+    Wait blocks until the WaitGroup task counter is zero.
+

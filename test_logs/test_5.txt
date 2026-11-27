@@ -1,0 +1,20 @@
+package sync // import "sync"
+
+func (wg *WaitGroup) Go(f func())
+    Go calls f in a new goroutine and adds that task to the WaitGroup. When f
+    returns, the task is removed from the WaitGroup.
+
+    The function f must not panic.
+
+    If the WaitGroup is empty, Go must happen before a WaitGroup.Wait.
+    Typically, this simply means Go is called to start tasks before Wait is
+    called. If the WaitGroup is not empty, Go may happen at any time. This means
+    a goroutine started by Go may itself call Go. If a WaitGroup is reused to
+    wait for several independent sets of tasks, new Go calls must happen after
+    all previous Wait calls have returned.
+
+    In the terminology of the Go memory model, the return from f "synchronizes
+    before" the return of any Wait call that it unblocks.
+
+[the Go memory model]: https://go.dev/ref/mem
+

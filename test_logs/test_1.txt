@@ -1,50 +1,44 @@
-=== RUN   TestCreateCharacterHandlerTable
-=== RUN   TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_empty
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_blank
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum
-=== RUN   TestCreateCharacterHandlerTable/invalid_JSON_syntax
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_a_string
---- PASS: TestCreateCharacterHandlerTable (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_empty (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_blank (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_JSON_syntax (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_a_string (0.00s)
-=== RUN   TestCreateCharacterHandlerTable
-=== RUN   TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_empty
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_blank
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum
-=== RUN   TestCreateCharacterHandlerTable/invalid_JSON_syntax
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_a_string
---- PASS: TestCreateCharacterHandlerTable (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_empty (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_blank (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_JSON_syntax (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_a_string (0.00s)
-PASS
-ok  	example.com/http-server	0.406s
+package sync // import "sync"
+
+type WaitGroup struct {
+	// Has unexported fields.
+}
+    A WaitGroup is a counting semaphore typically used to wait for a group of
+    goroutines or tasks to finish.
+
+    Typically, a main goroutine will start tasks, each in a new goroutine,
+    by calling WaitGroup.Go and then wait for all tasks to complete by calling
+    WaitGroup.Wait. For example:
+
+        var wg sync.WaitGroup
+        wg.Go(task1)
+        wg.Go(task2)
+        wg.Wait()
+
+    A WaitGroup may also be used for tracking tasks without using Go to start
+    new goroutines by using WaitGroup.Add and WaitGroup.Done.
+
+    The previous example can be rewritten using explicitly created goroutines
+    along with Add and Done:
+
+        var wg sync.WaitGroup
+        wg.Add(1)
+        go func() {
+        	defer wg.Done()
+        	task1()
+        }()
+        wg.Add(1)
+        go func() {
+        	defer wg.Done()
+        	task2()
+        }()
+        wg.Wait()
+
+    This pattern is common in code that predates WaitGroup.Go.
+
+    A WaitGroup must not be copied after first use.
+
+func (wg *WaitGroup) Add(delta int)
+func (wg *WaitGroup) Done()
+func (wg *WaitGroup) Go(f func())
+func (wg *WaitGroup) Wait()

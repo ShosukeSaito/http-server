@@ -1,96 +1,18 @@
-=== RUN   TestCharacterHandler
-    main_test.go:41: response body: {"id":2001,"name":"Hero","level":10}
---- PASS: TestCharacterHandler (0.00s)
-=== RUN   TestCharacterHandlerNotFound
---- PASS: TestCharacterHandlerNotFound (0.00s)
-=== RUN   TestCharacterHandlerBadRequest
---- PASS: TestCharacterHandlerBadRequest (0.00s)
-=== RUN   TestCharacterHandlerTable
-=== RUN   TestCharacterHandlerTable/existing_character_2001
-=== RUN   TestCharacterHandlerTable/existing_character_2002
-=== RUN   TestCharacterHandlerTable/character_not_found
-=== RUN   TestCharacterHandlerTable/invalid_character_ID
-=== RUN   TestCharacterHandlerTable/404_page_not_found
-=== RUN   TestCharacterHandlerTable/Method_Not_Allowed
---- PASS: TestCharacterHandlerTable (0.00s)
-    --- PASS: TestCharacterHandlerTable/existing_character_2001 (0.00s)
-    --- PASS: TestCharacterHandlerTable/existing_character_2002 (0.00s)
-    --- PASS: TestCharacterHandlerTable/character_not_found (0.00s)
-    --- PASS: TestCharacterHandlerTable/invalid_character_ID (0.00s)
-    --- PASS: TestCharacterHandlerTable/404_page_not_found (0.00s)
-    --- PASS: TestCharacterHandlerTable/Method_Not_Allowed (0.00s)
-=== RUN   TestCreateCharacterHandler
---- PASS: TestCreateCharacterHandler (0.00s)
-=== RUN   TestCreateCharacterHandlerTable
-=== RUN   TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_empty
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_blank
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum
-=== RUN   TestCreateCharacterHandlerTable/invalid_JSON_syntax
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_a_string
---- PASS: TestCreateCharacterHandlerTable (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_empty (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_blank (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_JSON_syntax (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_a_string (0.00s)
-=== RUN   TestCharacterHandler
-    main_test.go:41: response body: {"id":2001,"name":"Hero","level":10}
---- PASS: TestCharacterHandler (0.00s)
-=== RUN   TestCharacterHandlerNotFound
---- PASS: TestCharacterHandlerNotFound (0.00s)
-=== RUN   TestCharacterHandlerBadRequest
---- PASS: TestCharacterHandlerBadRequest (0.00s)
-=== RUN   TestCharacterHandlerTable
-=== RUN   TestCharacterHandlerTable/existing_character_2001
-=== RUN   TestCharacterHandlerTable/existing_character_2002
-=== RUN   TestCharacterHandlerTable/character_not_found
-=== RUN   TestCharacterHandlerTable/invalid_character_ID
-=== RUN   TestCharacterHandlerTable/404_page_not_found
-=== RUN   TestCharacterHandlerTable/Method_Not_Allowed
---- PASS: TestCharacterHandlerTable (0.00s)
-    --- PASS: TestCharacterHandlerTable/existing_character_2001 (0.00s)
-    --- PASS: TestCharacterHandlerTable/existing_character_2002 (0.00s)
-    --- PASS: TestCharacterHandlerTable/character_not_found (0.00s)
-    --- PASS: TestCharacterHandlerTable/invalid_character_ID (0.00s)
-    --- PASS: TestCharacterHandlerTable/404_page_not_found (0.00s)
-    --- PASS: TestCharacterHandlerTable/Method_Not_Allowed (0.00s)
-=== RUN   TestCreateCharacterHandler
---- PASS: TestCreateCharacterHandler (0.00s)
-=== RUN   TestCreateCharacterHandlerTable
-=== RUN   TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_empty
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_is_blank
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum
-=== RUN   TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum
-=== RUN   TestCreateCharacterHandlerTable/invalid_JSON_syntax
-=== RUN   TestCreateCharacterHandlerTable/invalid_character_level_is_a_string
---- PASS: TestCreateCharacterHandlerTable (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_Knight_and_level_is_1 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_empty (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_is_blank (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_length_is_20 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_name_exceeds_maximum_length (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_name_is_japanese (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_below_minimum (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/creating_knight_and_character_level_is_100 (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_exceeds_maximum (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_JSON_syntax (0.00s)
-    --- PASS: TestCreateCharacterHandlerTable/invalid_character_level_is_a_string (0.00s)
-PASS
-ok  	example.com/http-server	0.451s
+package sync // import "sync"
+
+func (wg *WaitGroup) Add(delta int)
+    Add adds delta, which may be negative, to the WaitGroup task counter. If the
+    counter becomes zero, all goroutines blocked on WaitGroup.Wait are released.
+    If the counter goes negative, Add panics.
+
+    Callers should prefer WaitGroup.Go.
+
+    Note that calls with a positive delta that occur when the counter is
+    zero must happen before a Wait. Calls with a negative delta, or calls
+    with a positive delta that start when the counter is greater than zero,
+    may happen at any time. Typically this means the calls to Add should execute
+    before the statement creating the goroutine or other event to be waited for.
+    If a WaitGroup is reused to wait for several independent sets of events,
+    new Add calls must happen after all previous Wait calls have returned.
+    See the WaitGroup example.
+
