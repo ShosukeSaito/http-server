@@ -43,4 +43,4 @@
 === RUN   TestCharacterStoreIndependence
 --- PASS: TestCharacterStoreIndependence (0.00s)
 PASS
-ok  	example.com/http-server	0.528s
+ok  	example.com/http-server	0.451s
