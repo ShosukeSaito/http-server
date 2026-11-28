@@ -337,10 +337,10 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 
 func TestCreateCharacterHandlerConcurrent(t *testing.T) {
 	store := NewCharacterStore()
-	// ② ルーターを生成する
+	// ルーターを生成する
 	mux := newRouter(store)
 
-	// ③ リクエスト数を定義する
+	// リクエスト数を定義する
 	const (
 		requestCount       = 10
 		initialCount       = 2
@@ -350,17 +350,17 @@ func TestCreateCharacterHandlerConcurrent(t *testing.T) {
 		expectedNextID     = expectedMinID + requestCount
 	)
 
-	// ④ 結果格納用のスライスを生成する
+	// 結果格納用のスライスを生成する
 	results := make([]Character, requestCount)
 
-	// ⑤ WaitGroupを定義する
+	// WaitGroupを定義する
 	var wg sync.WaitGroup
 
 	method := http.MethodPost
 	path := "/characters"
 	jsonBody := `{"name": "Knight", "level": 1}`
 
-	// ⑥ forループで10個のgoroutineを起動する
+	// forループで10個のgoroutineを起動する
 	for i := 0; i < requestCount; i++ {
 		wg.Go(func() {
 			// ===POST APIを実行===
@@ -403,32 +403,32 @@ func TestCreateCharacterHandlerConcurrent(t *testing.T) {
 		})
 	}
 
-	// ⑦ 全goroutineの終了を待機する
+	// 全goroutineの終了を待機する
 	wg.Wait()
 
 	seenIDs := make(map[int]bool)
 
 	for _, character := range results {
-		// ⑧ IDの重複がないことを検証する
+		// IDの重複がないことを検証する
 		if seenIDs[character.ID] {
 			t.Errorf("duplicate character ID found: %d", character.ID)
 		}
 
 		seenIDs[character.ID] = true
 
-		// ⑨ IDが2003〜2012の範囲内であることを検証する
+		// IDが2003〜2012の範囲内であることを検証する
 		if character.ID < expectedMinID ||
 			character.ID > expectedMaxID {
 			t.Errorf("character ID %d is out of expected range", character.ID)
 		}
 	}
 
-	// ⑩ charactersの要素数を検証する
+	// charactersの要素数を検証する
 	if len(store.characters) != expectedTotalCount {
 		t.Errorf("expected characters length %d, got %d", expectedTotalCount, len(store.characters))
 	}
 
-	// ⑪ nextCharacterIDを検証する
+	// nextIDを検証する
 	if store.nextID != expectedNextID {
 		t.Errorf("expected nextCharacterID %d, got %d", expectedNextID, store.nextID)
 	}
