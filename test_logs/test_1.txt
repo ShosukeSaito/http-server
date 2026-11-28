@@ -39,4 +39,4 @@
 === RUN   TestCreateCharacterHandlerConcurrent
 --- PASS: TestCreateCharacterHandlerConcurrent (0.00s)
 PASS
-ok  	example.com/http-server	0.476s
+ok  	example.com/http-server	0.009s
