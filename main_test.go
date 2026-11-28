@@ -575,13 +575,13 @@ func TestCharacterStoreIndependence(t *testing.T) {
 	// Knightの存在と内容を検証
 	_, exists := storeA.GetByID(expectedCharacterID)
 	if !exists {
-		t.Errorf("character 2003 should not exist in storeA")
+		t.Errorf("character %d should exist in storeA", expectedCharacterID)
 	}
 
 	//storeBに未登録であることを検証
 	_, exists = storeB.GetByID(expectedCharacterID)
 	if exists {
-		t.Errorf("character 2003 should not exist in storeB")
+		t.Errorf("character %d should not exist in storeB", expectedCharacterID)
 	}
 
 	characterB := storeB.Create(expectedCharacterNameB, level)
@@ -596,7 +596,11 @@ func TestCharacterStoreIndependence(t *testing.T) {
 	}
 
 	// 期待値: Knight
-	characterA, _ = storeA.GetByID(expectedCharacterID)
+	characterA, exists = storeA.GetByID(expectedCharacterID)
+	if !exists {
+		t.Fatalf("character %d should exist in storeA", expectedCharacterID)
+	}
+
 	if characterA.Name != expectedCharacterNameA {
 		t.Errorf(
 			"expected name %s got %s",
@@ -607,7 +611,10 @@ func TestCharacterStoreIndependence(t *testing.T) {
 	}
 
 	// 期待値: Archer
-	characterB, _ = storeB.GetByID(expectedCharacterID)
+	characterB, exists = storeB.GetByID(expectedCharacterID)
+	if !exists {
+		t.Fatalf("character %d should exist in storeB", expectedCharacterID)
+	}
 	if characterB.Name != expectedCharacterNameB {
 		t.Errorf(
 			"expected name %s got %s",
