@@ -10,8 +10,6 @@ import (
 )
 
 func TestCharacterHandlerTable(t *testing.T) {
-	mux := newRouter()
-
 	tests := []struct {
 		// テストケースの識別情報
 		name string
@@ -86,6 +84,8 @@ func TestCharacterHandlerTable(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			store := NewCharacterStore()
+			mux := newRouter(store)
 
 			req := httptest.NewRequest(
 				tt.method,
@@ -140,29 +140,7 @@ func TestCharacterHandlerTable(t *testing.T) {
 	}
 }
 
-func resetCharacterState() {
-	charactersMu.Lock()
-	defer charactersMu.Unlock()
-
-	characters = map[int]Character{
-		2001: {
-			ID:    2001,
-			Name:  "Hero",
-			Level: 10,
-		},
-		2002: {
-			ID:    2002,
-			Name:  "Mage",
-			Level: 8,
-		},
-	}
-
-	nextCharacterID = 2003
-}
-
 func TestCreateCharacterHandlerTable(t *testing.T) {
-	mux := newRouter()
-
 	// テストケースの定義
 	tests := []struct {
 		// テストケースの識別情報
@@ -290,7 +268,8 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			resetCharacterState()
+			store := NewCharacterStore()
+			mux := newRouter(store)
 
 			req := httptest.NewRequest(
 				method,
@@ -357,11 +336,9 @@ func TestCreateCharacterHandlerTable(t *testing.T) {
 }
 
 func TestCreateCharacterHandlerConcurrent(t *testing.T) {
-	// ① キャラクターの状態を初期化する
-	resetCharacterState()
-
+	store := NewCharacterStore()
 	// ② ルーターを生成する
-	mux := newRouter()
+	mux := newRouter(store)
 
 	// ③ リクエスト数を定義する
 	const (
@@ -447,12 +424,12 @@ func TestCreateCharacterHandlerConcurrent(t *testing.T) {
 	}
 
 	// ⑩ charactersの要素数を検証する
-	if len(characters) != expectedTotalCount {
-		t.Errorf("expected characters length %d, got %d", expectedTotalCount, len(characters))
+	if len(store.characters) != expectedTotalCount {
+		t.Errorf("expected characters length %d, got %d", expectedTotalCount, len(store.characters))
 	}
 
 	// ⑪ nextCharacterIDを検証する
-	if nextCharacterID != expectedNextID {
-		t.Errorf("expected nextCharacterID %d, got %d", expectedNextID, nextCharacterID)
+	if store.nextID != expectedNextID {
+		t.Errorf("expected nextCharacterID %d, got %d", expectedNextID, store.nextID)
 	}
 }
