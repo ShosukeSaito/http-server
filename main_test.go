@@ -433,3 +433,115 @@ func TestCreateCharacterHandlerConcurrent(t *testing.T) {
 		t.Errorf("expected nextCharacterID %d, got %d", expectedNextID, store.nextID)
 	}
 }
+
+func TestCreateAndGetCharacter(t *testing.T) {
+	store := NewCharacterStore()
+	mux := newRouter(store)
+
+	path := "/characters"
+	jsonBody := `{"name": "Knight", "level": 15}`
+
+	expectedContentType := "application/json"
+	expectedLocation := "/characters/2003"
+	expectedCharacter := Character{
+		ID:    2003,
+		Name:  "Knight",
+		Level: 15,
+	}
+
+	postReq := httptest.NewRequest(
+		http.MethodPost,
+		path,
+		strings.NewReader(jsonBody),
+	)
+
+	postReq.Header.Set("Content-Type", "application/json")
+
+	postRecorder := httptest.NewRecorder()
+
+	mux.ServeHTTP(postRecorder, postReq)
+
+	if postRecorder.Code != http.StatusCreated {
+		t.Fatalf(
+			"expected status %d, got %d",
+			http.StatusCreated,
+			postRecorder.Code,
+		)
+	}
+
+	postActualContentType := postRecorder.Header().Get("Content-Type")
+	if postActualContentType != expectedContentType {
+		t.Errorf(
+			"expected Content-Type %q, got %q",
+			expectedContentType,
+			postActualContentType,
+		)
+	}
+
+	postActualLocation := postRecorder.Header().Get("Location")
+	if postActualLocation != expectedLocation {
+		t.Errorf(
+			"expected Location %q, got %q",
+			expectedLocation,
+			postActualLocation,
+		)
+	}
+
+	var postActualCharacter Character
+	err := json.Unmarshal(
+		postRecorder.Body.Bytes(),
+		&postActualCharacter,
+	)
+
+	if err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+
+	if postActualCharacter != expectedCharacter {
+		t.Errorf("expected %+v, got %+v", expectedCharacter, postActualCharacter)
+	}
+
+	path = "/characters/2003"
+	getReq := httptest.NewRequest(
+		http.MethodGet,
+		path,
+		nil,
+	)
+	getRecorder := httptest.NewRecorder()
+
+	mux.ServeHTTP(getRecorder, getReq)
+
+	if getRecorder.Code != http.StatusOK {
+		t.Fatalf(
+			"expected status %d, got %d",
+			http.StatusOK,
+			getRecorder.Code,
+		)
+	}
+
+	getActualContentType := getRecorder.Header().Get("Content-Type")
+	if getActualContentType != expectedContentType {
+		t.Errorf(
+			"expected Content-Type %q, got %q",
+			expectedContentType,
+			getActualContentType,
+		)
+	}
+
+	var getActualCharacter Character
+
+	err = json.Unmarshal(
+		getRecorder.Body.Bytes(),
+		&getActualCharacter,
+	)
+
+	if err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+
+	if getActualCharacter != expectedCharacter {
+		t.Errorf("expected %+v, got %+v", expectedCharacter, getActualCharacter)
+	}
+}
+
+func TestCharacterStoreIndependence(t *testing.T)
