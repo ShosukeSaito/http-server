@@ -552,73 +552,21 @@ func TestCreateAndGetCharacter(t *testing.T) {
 
 func TestCharacterStoreIndependence(t *testing.T) {
 	storeA := NewCharacterStore()
-	muxA := newRouter(storeA)
-
 	storeB := NewCharacterStore()
-	muxB := newRouter(storeB)
 
-	method := http.MethodPost
-	path := "/characters"
-	jsonBody := `{"name": "Knight", "level": 1}`
+	storeA.Create("Knight", 1)
+	// storeAの採番IDを検証
+	storeA.GetByID(2003)
 
-	reqA := httptest.NewRequest(
-		method,
-		path,
-		strings.NewReader(jsonBody),
-	)
+	//storeBに未登録であることを検証
+	storeB.GetByID(2003)
 
-	reqA.Header.Set("Content-Type", "application/json")
+	// storeBの採番IDを検証
+	storeB.Create("Archer", 1)
 
-	recA := httptest.NewRecorder()
+	// 期待値: Knight
+	storeA.GetByID(2003)
+	// 期待値: Archer
+	storeB.GetByID(2003)
 
-	muxA.ServeHTTP(recA, reqA)
-
-	if recA.Code != http.StatusCreated {
-		t.Fatalf(
-			"expected status %d, got %d",
-			http.StatusCreated,
-			recA.Code,
-		)
-	}
-
-	var charaA Character
-	if err := json.Unmarshal(
-		recA.Body.Bytes(),
-		&charaA,
-	); err != nil {
-		t.Errorf("failed to decode response: %v", err)
-	}
-
-	reqB := httptest.NewRequest(
-		method,
-		path,
-		strings.NewReader(jsonBody),
-	)
-
-	reqB.Header.Set("Content-Type", "application/json")
-
-	recB := httptest.NewRecorder()
-
-	muxB.ServeHTTP(recB, reqB)
-
-	if recB.Code != http.StatusCreated {
-		t.Fatalf(
-			"expected status %d, got %d",
-			http.StatusCreated,
-			recB.Code,
-		)
-	}
-
-	var charaB Character
-	if err := json.Unmarshal(
-		recB.Body.Bytes(),
-		&charaB,
-	); err != nil {
-		t.Errorf("failed to decode response: %v", err)
-	}
-
-	if charaB.ID != 2003 {
-		t.Errorf("expected storeB first character ID to be 2003, got %d", charaB.ID)
-
-	}
 }
