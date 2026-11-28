@@ -435,12 +435,15 @@ func TestCreateCharacterHandlerConcurrent(t *testing.T) {
 }
 
 func TestCreateAndGetCharacter(t *testing.T) {
+	// テスト環境の準備
 	store := NewCharacterStore()
 	mux := newRouter(store)
 
-	path := "/characters"
+	postPath := "/characters"
+	getPath := "/characters/2003"
 	jsonBody := `{"name": "Knight", "level": 15}`
 
+	// 期待値の定義
 	expectedContentType := "application/json"
 	expectedLocation := "/characters/2003"
 	expectedCharacter := Character{
@@ -451,7 +454,7 @@ func TestCreateAndGetCharacter(t *testing.T) {
 
 	postReq := httptest.NewRequest(
 		http.MethodPost,
-		path,
+		postPath,
 		strings.NewReader(jsonBody),
 	)
 
@@ -459,8 +462,10 @@ func TestCreateAndGetCharacter(t *testing.T) {
 
 	postRecorder := httptest.NewRecorder()
 
+	// POSTリクエストの実行
 	mux.ServeHTTP(postRecorder, postReq)
 
+	// POSTレスポンスの検証
 	if postRecorder.Code != http.StatusCreated {
 		t.Fatalf(
 			"expected status %d, got %d",
@@ -501,16 +506,17 @@ func TestCreateAndGetCharacter(t *testing.T) {
 		t.Errorf("expected %+v, got %+v", expectedCharacter, postActualCharacter)
 	}
 
-	path = "/characters/2003"
 	getReq := httptest.NewRequest(
 		http.MethodGet,
-		path,
+		getPath,
 		nil,
 	)
 	getRecorder := httptest.NewRecorder()
 
+	// GETリクエストの実行
 	mux.ServeHTTP(getRecorder, getReq)
 
+	// GETレスポンスの検証
 	if getRecorder.Code != http.StatusOK {
 		t.Fatalf(
 			"expected status %d, got %d",
@@ -544,4 +550,140 @@ func TestCreateAndGetCharacter(t *testing.T) {
 	}
 }
 
-func TestCharacterStoreIndependence(t *testing.T)
+func TestCharacterStoreIndependence(t *testing.T) {
+	storeA := NewCharacterStore()
+	muxA := newRouter(storeA)
+
+	storeB := NewCharacterStore()
+	muxB := newRouter(storeB)
+
+	method := http.MethodPost
+	path := "/characters"
+	jsonBody := `{"name": "Knight", "level": 1}`
+
+	reqA := httptest.NewRequest(
+		method,
+		path,
+		strings.NewReader(jsonBody),
+	)
+
+	reqA.Header.Set("Content-Type", "application/json")
+
+	recA := httptest.NewRecorder()
+
+	muxA.ServeHTTP(recA, reqA)
+
+	if recA.Code != http.StatusCreated {
+		t.Fatalf(
+			"expected status %d, got %d",
+			http.StatusCreated,
+			recA.Code,
+		)
+	}
+
+	var charaA Character
+	if err := json.Unmarshal(
+		recA.Body.Bytes(),
+		&charaA,
+	); err != nil {
+		t.Errorf("failed to decode response: %v", err)
+	}
+
+	reqB := httptest.NewRequest(
+		method,
+		path,
+		strings.NewReader(jsonBody),
+	)
+
+	reqB.Header.Set("Content-Type", "application/json")
+
+	recB := httptest.NewRecorder()
+
+	muxB.ServeHTTP(recB, reqB)
+
+	if recB.Code != http.StatusCreated {
+		t.Fatalf(
+			"expected status %d, got %d",
+			http.StatusCreated,
+			recB.Code,
+		)
+	}
+
+	var charaB Character
+	if err := json.Unmarshal(
+		recB.Body.Bytes(),
+		&charaB,
+	); err != nil {
+		t.Errorf("failed to decode response: %v", err)
+	}
+
+	if charaB.ID != 2003 {
+		t.Errorf("expected storeB first character ID to be 2003, got %d", charaB.ID)
+
+	}
+}
+
+// func TestCharacterStoreIndependence(t *testing.T) {
+// 	const requestCount = 2
+
+// 	// results := make(map[int]Character)
+// 	results := make([]Character, requestCount*requestCount)
+
+// 	var wg sync.WaitGroup
+
+// 	method := http.MethodPost
+// 	path := "/characters"
+// 	jsonBody := `{"name": "Knight", "level": 1}`
+
+// 	for i := 0; i < requestCount; i++ {
+// 		store := NewCharacterStore()
+// 		mux := newRouter(store)
+
+// 		wg.Go(func() {
+// 			for j := 0; j < requestCount; j++ {
+
+// 				req := httptest.NewRequest(
+// 					method,
+// 					path,
+// 					strings.NewReader(jsonBody),
+// 				)
+
+// 				req.Header.Set("Content-Type", "application/json")
+
+// 				recorder := httptest.NewRecorder()
+
+// 				mux.ServeHTTP(recorder, req)
+
+// 				if recorder.Code != http.StatusCreated {
+// 					t.Errorf(
+// 						"expected status %d, got %d",
+// 						http.StatusCreated,
+// 						recorder.Code,
+// 					)
+// 					return
+// 				}
+
+// 				var character Character
+// 				err := json.Unmarshal(
+// 					recorder.Body.Bytes(),
+// 					&character,
+// 				)
+
+// 				if err != nil {
+// 					t.Errorf("failed to decode response: %v", err)
+// 					return
+// 				}
+
+// 				n := i*requestCount + j
+
+// 				results[n] = character
+// 			}
+// 		})
+// 	}
+
+// 	wg.Wait()
+
+// 	for idx, character := range results {
+// 		t.Logf("[%d] got %+v", idx, character)
+// 	}
+// }
