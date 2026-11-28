@@ -9,7 +9,7 @@ type CharacterStore struct {
 }
 
 func NewCharacterStore() *CharacterStore {
-	// 1. 呼び出すたびに新しい map を生成する
+	// 呼び出すたびに新しい map を生成する
 	newChars := map[int]Character{
 		// 初期データを定義する
 		2001: {
@@ -24,10 +24,10 @@ func NewCharacterStore() *CharacterStore {
 		},
 	}
 
-	// 3. 実体を生成してポインタを返す
+	// 実体を生成してポインタを返す
 	return &CharacterStore{
 		characters: newChars,
-		nextID:     2003, // 2003
+		nextID:     2003,
 	}
 }
 
